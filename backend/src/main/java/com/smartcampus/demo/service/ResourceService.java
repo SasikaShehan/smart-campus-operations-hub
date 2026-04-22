@@ -13,12 +13,14 @@ public class ResourceService {
     private ResourceRepository resourceRepository;
 
     public List<Resource> findAll(String type, Integer capacity, String location) {
-        // Convert empty strings to null for the query
-        type = (type != null && !type.isEmpty()) ? type : null;
-        location = (location != null && !location.isEmpty()) ? location : null;
-        capacity = (capacity != null && capacity <= 0) ? null : capacity;
-        return resourceRepository.search(type, capacity, location);
+        // Use empty strings for regex matching if null, and 0 for minimum capacity
+        String typeParam = (type != null) ? type : "";
+        String locationParam = (location != null) ? location : "";
+        Integer capacityParam = (capacity != null) ? capacity : 0;
+        
+        return resourceRepository.search(typeParam, capacityParam, locationParam);
     }
+
 
     public Resource findById(String id) {
         return resourceRepository.findById(id)

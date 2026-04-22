@@ -30,52 +30,70 @@ const ResourceForm = ({ resource, onClose }) => {
   };
 
   return (
-    <div className="modal show d-block" tabIndex="-1">
-      <div className="modal-dialog">
-        <div className="modal-content">
-          <div className="modal-header">
-            <h5 className="modal-title">{resource ? 'Edit Resource' : 'Add Resource'}</h5>
-            <button type="button" className="btn-close" onClick={onClose}></button>
-          </div>
-          <form onSubmit={handleSubmit}>
-            <div className="modal-body">
-              <div className="mb-3">
-                <label className="form-label">Name</label>
-                <input type="text" className="form-control" name="name" value={formData.name} onChange={handleChange} required />
-              </div>
-              <div className="mb-3">
-                <label className="form-label">Type</label>
-                <input type="text" className="form-control" name="type" value={formData.type} onChange={handleChange} required />
-              </div>
-              <div className="mb-3">
-                <label className="form-label">Capacity</label>
-                <input type="number" className="form-control" name="capacity" value={formData.capacity} onChange={handleChange} required />
-              </div>
-              <div className="mb-3">
-                <label className="form-label">Location</label>
-                <input type="text" className="form-control" name="location" value={formData.location} onChange={handleChange} required />
-              </div>
-              <div className="mb-3">
-                <label className="form-label">Availability Windows</label>
-                <input type="text" className="form-control" name="availabilityWindows" value={formData.availabilityWindows} onChange={handleChange} placeholder="e.g., 09:00-17:00" />
-              </div>
-              <div className="mb-3">
-                <label className="form-label">Status</label>
-                <select className="form-select" name="status" value={formData.status} onChange={handleChange}>
-                  <option value="ACTIVE">Active</option>
-                  <option value="OUT_OF_SERVICE">Out of Service</option>
-                </select>
-              </div>
-            </div>
-            <div className="modal-footer">
-              <button type="button" className="btn btn-secondary" onClick={onClose}>Cancel</button>
-              <button type="submit" className="btn btn-primary">Save</button>
-            </div>
-          </form>
+    <div className="modal-overlay animate-fade-in">
+      <div className="modal-card">
+        <div className="modal-header">
+          <h2>{resource ? 'Edit Resource' : 'Add New Resource'}</h2>
+          <button className="close-btn" onClick={onClose}>×</button>
         </div>
+        
+        <form onSubmit={handleSubmit} className="modal-form">
+          <div className="form-grid">
+            <div className="form-group">
+              <label>Resource Name</label>
+              <input type="text" name="name" value={formData.name} onChange={handleChange} required placeholder="e.g. Main Laboratory" />
+            </div>
+            
+            <div className="form-group">
+              <label>Resource Type</label>
+              <select name="type" value={formData.type} onChange={handleChange} required>
+                <option value="">Select Type</option>
+                <option value="LAB">Laboratory</option>
+                <option value="ROOM">Lecture Room</option>
+                <option value="EQUIPMENT">Equipment</option>
+                <option value="HALL">Main Hall</option>
+              </select>
+            </div>
+            
+            <div className="form-group">
+              <label>Capacity</label>
+              <input type="number" name="capacity" value={formData.capacity} onChange={handleChange} required placeholder="Number of people" />
+            </div>
+            
+            <div className="form-group">
+              <label>Location</label>
+              <input type="text" name="location" value={formData.location} onChange={handleChange} required placeholder="e.g. Block B, Level 2" />
+            </div>
+
+            <div className="form-group full-width">
+              <label>Availability Windows</label>
+              <input type="text" name="availabilityWindows" value={formData.availabilityWindows} onChange={handleChange} placeholder="e.g. 08:00 AM - 06:00 PM" />
+            </div>
+
+            <div className="form-group full-width">
+              <label>Operational Status</label>
+              <div className="status-toggle">
+                <label className={`status-option ${formData.status === 'ACTIVE' ? 'active' : ''}`}>
+                  <input type="radio" name="status" value="ACTIVE" checked={formData.status === 'ACTIVE'} onChange={handleChange} />
+                  Active
+                </label>
+                <label className={`status-option ${formData.status === 'OUT_OF_SERVICE' ? 'active' : ''}`}>
+                  <input type="radio" name="status" value="OUT_OF_SERVICE" checked={formData.status === 'OUT_OF_SERVICE'} onChange={handleChange} />
+                  Out of Service
+                </label>
+              </div>
+            </div>
+          </div>
+
+          <div className="modal-footer">
+            <button type="button" className="btn btn-outline" onClick={onClose}>Discard</button>
+            <button type="submit" className="btn btn-primary">{resource ? 'Update Resource' : 'Create Resource'}</button>
+          </div>
+        </form>
       </div>
     </div>
   );
 };
+
 
 export default ResourceForm;

@@ -55,52 +55,111 @@ const TicketDetails = () => {
   if (!ticket) return <div>Loading...</div>;
 
   return (
-    <div className="container mt-4">
-      <h2>Ticket #{ticket.id}</h2>
-      <div className="card mb-3">
-        <div className="card-body">
-          <p><strong>Resource:</strong> {ticket.resource?.name}</p>
-          <p><strong>Category:</strong> {ticket.category}</p>
-          <p><strong>Description:</strong> {ticket.description}</p>
-          <p><strong>Priority:</strong> {ticket.priority}</p>
-          <p><strong>Status:</strong> {ticket.status}</p>
-          <p><strong>Reporter:</strong> {ticket.reporter?.name}</p>
-          <p><strong>Assignee:</strong> {ticket.assignee?.name || 'Unassigned'}</p>
-        </div>
-      </div>
+    <div className="container animate-fade-in">
+      <div className="ticket-detail-grid">
+        <div className="ticket-main-column">
+          <div className="card ticket-info-card">
+            <div className="section-header">
+              <span className="ticket-id">#{ticket.id}</span>
+              <div className="d-flex gap-2">
+                <span className={`badge ${ticket.status === 'RESOLVED' ? 'badge-success' : 'badge-primary'}`}>{ticket.status}</span>
+                <span className={`badge priority-${ticket.priority?.toLowerCase()}`}>{ticket.priority} Priority</span>
+              </div>
+            </div>
+            
+            <h1 className="mt-2">{ticket.category}</h1>
+            <p className="ticket-resource-name">Resource: <strong>{ticket.resource?.name}</strong></p>
+            
+            <div className="ticket-description-box">
+              <h3>Incident Description</h3>
+              <p>{ticket.description}</p>
+            </div>
 
-      {(user?.role === 'TECHNICIAN' || user?.role === 'ADMIN') && (
-        <div className="mb-3">
-          <select className="form-select mb-2" onChange={(e) => handleStatusChange(e.target.value, '')}>
-            <option>Change Status</option>
-            <option value="IN_PROGRESS">In Progress</option>
-            <option value="RESOLVED">Resolved</option>
-            <option value="CLOSED">Closed</option>
-          </select>
-          {user?.role === 'ADMIN' && (
-            <select className="form-select" onChange={(e) => handleAssign(e.target.value)}>
-              <option>Assign to</option>
-              {users.map(u => <option key={u.id} value={u.id}>{u.name}</option>)}
-            </select>
-          )}
-        </div>
-      )}
-
-      <h4>Comments</h4>
-      <div className="mb-3">
-        {comments.map(c => (
-          <div key={c.id} className="border rounded p-2 mb-2">
-            <strong>{c.user?.name}</strong> <small className="text-muted">{new Date(c.createdAt).toLocaleString()}</small>
-            <p>{c.content}</p>
+            {ticket.attachments && ticket.attachments.length > 0 && (
+              <div className="ticket-attachments">
+                <h3>Evidence Attachments</h3>
+                <div className="attachment-grid">
+                  {ticket.attachments.map((att, idx) => (
+                    <div key={idx} className="attachment-preview">
+                      <img src={`http://localhost:8080/api/files/${att.fileName}`} alt="attachment" />
+                    </div>
+                  ))}
+                </div>
+              </div>
+            )}
           </div>
-        ))}
-      </div>
 
-      <form onSubmit={handleCommentSubmit}>
-        <textarea className="form-control mb-2" rows="3" value={newComment} onChange={(e) => setNewComment(e.target.value)} required />
-        <button type="submit" className="btn btn-primary">Add Comment</button>
-      </form>
+          <div className="comment-section mt-4">
+            <h3>Discussion & Updates</h3>
+            <div className="comment-feed card">
+              {comments.length > 0 ? comments.map((c, idx) => (
+                <div key={idx} className="comment-item">
+                  <div className="comment-avatar">{c.user?.name?.charAt(0) || 'U'}</div>
+                  <div className="comment-content-wrapper">
+                    <div className="comment-header">
+                      <span className="comment-user">{c.user?.name || 'Unknown User'}</span>
+                      <span className="comment-date">{new Date(c.createdAt).toLocaleString()}</span>
+                    </div>
+                    <p className="comment-text">{c.content}</p>
+                  </div>
+                </div>
+              )) : <p className="text-muted text-center p-4">No comments yet. Start the conversation.</p>}
+              
+              <form onSubmit={handleCommentSubmit} className="comment-form">
+                <textarea 
+                  placeholder="Add a comment or resolution note..." 
+                  value={newComment} 
+                  onChange={(e) => setNewComment(e.target.value)} 
+                  required 
+                />
+                <button type="submit" className="btn btn-primary">Post Comment</button>
+              </form>
+            </div>
+          </div>
+        </div>
+
+        <div className="ticket-side-column">
+          <div className="card admin-controls-card">
+            <h3>Manage Incident</h3>
+            <div className="meta-list">
+              <div className="meta-row">
+                <span>Reporter</span>
+                <strong>{ticket.reporter?.name}</strong>
+              </div>
+              <div className="meta-row">
+                <span>Assignee</span>
+                <strong>{ticket.assignee?.name || 'Unassigned'}</strong>
+              </div>
+            </div>
+
+            {(user?.role === 'TECHNICIAN' || user?.role === 'ADMIN') && (
+              <div className="control-groups mt-4">
+                <div className="form-group">
+                  <label>Update Status</label>
+                  <select onChange={(e) => handleStatusChange(e.target.value, '')}>
+                    <option>Select New Status</option>
+                    <option value="IN_PROGRESS">Set In Progress</option>
+                    <option value="RESOLVED">Mark Resolved</option>
+                    <option value="CLOSED">Close Ticket</option>
+                  </select>
+                </div>
+
+                {user?.role === 'ADMIN' && (
+                  <div className="form-group mt-3">
+                    <label>Assign Technician</label>
+                    <select onChange={(e) => handleAssign(e.target.value)}>
+                      <option>Choose Assignee</option>
+                      {users.map(u => <option key={u.id} value={u.id}>{u.name}</option>)}
+                    </select>
+                  </div>
+                )}
+              </div>
+            )}
+          </div>
+        </div>
+      </div>
     </div>
+
   );
 };
 

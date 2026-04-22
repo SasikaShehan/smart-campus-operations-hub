@@ -14,38 +14,34 @@ const Navbar = () => {
   };
 
   return (
-    <nav className="navbar navbar-expand-lg navbar-dark bg-dark">
-      <div className="container-fluid">
-        <Link className="navbar-brand" to="/">Smart Campus</Link>
-        <button className="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
-          <span className="navbar-toggler-icon"></span>
-        </button>
-        <div className="collapse navbar-collapse" id="navbarNav">
-          <ul className="navbar-nav me-auto">
-            <li className="nav-item">
-              <Link className="nav-link" to="/resources">Resources</Link>
-            </li>
-            <li className="nav-item">
-              <Link className="nav-link" to="/bookings">My Bookings</Link>
-            </li>
-            <li className="nav-item">
-              <Link className="nav-link" to="/tickets">Tickets</Link>
-            </li>
-            {user && user.role === 'ADMIN' && (
-              <li className="nav-item">
-                <Link className="nav-link" to="/admin">Admin Dashboard</Link>
-              </li>
-            )}
-          </ul>
-          <div className="d-flex align-items-center">
-            <NotificationBell />
-            <span className="text-light me-3">Hello, {user?.name || 'User'}</span>
-            <button className="btn btn-outline-light" onClick={handleLogout}>Logout</button>
+    <nav className="navbar">
+      <div className="navbar-container">
+        <Link className="navbar-brand" to="/">
+          <span className="brand-dot"></span>
+          SmartCampus
+        </Link>
+        
+        <div className="navbar-links">
+          <Link className="nav-link" to="/resources">Resources</Link>
+          <Link className="nav-link" to="/bookings">Bookings</Link>
+          <Link className="nav-link" to="/tickets">Tickets</Link>
+          {user && user.role === 'ADMIN' && (
+            <Link className="nav-link admin-link" to="/admin">Admin</Link>
+          )}
+        </div>
+
+        <div className="navbar-actions">
+          <NotificationBell />
+          <div className="user-profile">
+            <div className="avatar">{user?.name?.charAt(0) || 'U'}</div>
+            <span className="user-name">{user?.name || 'User'}</span>
           </div>
+          <button className="btn btn-outline logout-btn" onClick={handleLogout}>Logout</button>
         </div>
       </div>
     </nav>
   );
 };
+
 
 export default Navbar;

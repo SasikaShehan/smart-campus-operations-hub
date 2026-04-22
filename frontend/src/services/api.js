@@ -54,7 +54,8 @@ export const getUnreadNotifications = () => api.get('/notifications/unread');
 export const markNotificationRead = (id) => api.put(`/notifications/${id}/read`);
 
 // ========== USERS (Admin) ==========
-export const getAllUsers = () => api.get('/admin/users');                     // <-- NEW
+export const getAllUsers = () => api.get('/admin/users');
+export const getAdminAnalytics = () => api.get('/admin/analytics');
 
 // ========== AUTH ==========
 export const getCurrentUser = () => api.get('/auth/me');

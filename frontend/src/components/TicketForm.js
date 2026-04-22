@@ -60,87 +60,110 @@ const TicketForm = () => {
   };
 
   return (
-    <div className="container mt-4">
-      <h2>Report an Incident</h2>
-      {error && (
-        <div className="alert alert-danger" role="alert">
-          Failed to create ticket: {error}
+    <div className="container animate-fade-in">
+      <div className="form-container-card card">
+        <div className="section-header">
+          <h1>Report an Incident</h1>
+          <p className="text-muted">Submit a ticket for equipment or facility maintenance</p>
         </div>
-      )}
-      <form onSubmit={handleSubmit}>
-        <div className="mb-3">
-          <label className="form-label">Resource ID</label>
-          <input
-            type="text"
-            className="form-control"
-            name="resourceId"
-            value={formData.resourceId}
-            onChange={handleChange}
-            required
-          />
-          <small className="text-muted">Enter the ID of the resource (e.g., 67f1a2b3c4d5e6f7a8b9c0d1)</small>
-        </div>
-        <div className="mb-3">
-          <label className="form-label">Category</label>
-          <input
-            type="text"
-            className="form-control"
-            name="category"
-            value={formData.category}
-            onChange={handleChange}
-            required
-          />
-        </div>
-        <div className="mb-3">
-          <label className="form-label">Description</label>
-          <textarea
-            className="form-control"
-            name="description"
-            rows="3"
-            value={formData.description}
-            onChange={handleChange}
-            required
-          />
-        </div>
-        <div className="mb-3">
-          <label className="form-label">Priority</label>
-          <select
-            className="form-select"
-            name="priority"
-            value={formData.priority}
-            onChange={handleChange}
-          >
-            <option value="LOW">Low</option>
-            <option value="MEDIUM">Medium</option>
-            <option value="HIGH">High</option>
-          </select>
-        </div>
-        <div className="mb-3">
-          <label className="form-label">Contact Details</label>
-          <input
-            type="text"
-            className="form-control"
-            name="contactDetails"
-            value={formData.contactDetails}
-            onChange={handleChange}
-            required
-          />
-        </div>
-        <div className="mb-3">
-          <label className="form-label">Attachments (max 3 images)</label>
-          <input
-            type="file"
-            className="form-control"
-            multiple
-            onChange={handleFileChange}
-            accept="image/*"
-          />
-        </div>
-        <button type="submit" className="btn btn-primary" disabled={loading}>
-          {loading ? 'Submitting...' : 'Submit Ticket'}
-        </button>
-      </form>
+
+        {error && (
+          <div className="alert-box danger mb-4">
+            <strong>Submission Failed:</strong> {error}
+          </div>
+        )}
+
+        <form onSubmit={handleSubmit} className="modern-form">
+          <div className="form-grid">
+            <div className="form-group">
+              <label>Affected Resource</label>
+              <input
+                type="text"
+                name="resourceId"
+                value={formData.resourceId}
+                onChange={handleChange}
+                required
+                placeholder="Enter Resource ID"
+              />
+            </div>
+            
+            <div className="form-group">
+              <label>Incident Category</label>
+              <input
+                type="text"
+                name="category"
+                value={formData.category}
+                onChange={handleChange}
+                required
+                placeholder="e.g. Electrical, Plumbing"
+              />
+            </div>
+            
+            <div className="form-group">
+              <label>Priority Level</label>
+              <select
+                name="priority"
+                value={formData.priority}
+                onChange={handleChange}
+              >
+                <option value="LOW">Low - Not Urgent</option>
+                <option value="MEDIUM">Medium - Normal</option>
+                <option value="HIGH">High - Urgent</option>
+              </select>
+            </div>
+            
+            <div className="form-group">
+              <label>Contact Details</label>
+              <input
+                type="text"
+                name="contactDetails"
+                value={formData.contactDetails}
+                onChange={handleChange}
+                required
+                placeholder="Your email or phone"
+              />
+            </div>
+
+            <div className="form-group full-width">
+              <label>Detailed Description</label>
+              <textarea
+                name="description"
+                rows="4"
+                value={formData.description}
+                onChange={handleChange}
+                required
+                placeholder="Describe the issue in detail..."
+              />
+            </div>
+
+            <div className="form-group full-width">
+              <label>Evidence Attachments (Max 3 Images)</label>
+              <div className="file-upload-zone">
+                <input
+                  type="file"
+                  multiple
+                  onChange={handleFileChange}
+                  accept="image/*"
+                  id="ticket-files"
+                />
+                <div className="upload-placeholder">
+                  <span className="upload-icon">📁</span>
+                  <span>{files.length > 0 ? `${files.length} files selected` : 'Click to upload images or drag & drop'}</span>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div className="form-actions mt-4">
+            <button type="submit" className="btn btn-primary w-100" disabled={loading}>
+              {loading ? 'Processing Submission...' : 'Submit Incident Report'}
+            </button>
+            <button type="button" className="btn btn-outline w-100 mt-2" onClick={() => navigate('/tickets')}>Back to Tickets</button>
+          </div>
+        </form>
+      </div>
     </div>
+
   );
 };
 
