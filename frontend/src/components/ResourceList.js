@@ -41,57 +41,68 @@ const ResourceList = () => {
   };
 
   return (
-    <div className="container mt-4">
-      <h2>Resources</h2>
-      {user?.role === 'ADMIN' && (
-        <button className="btn btn-primary mb-3" onClick={() => setShowForm(true)}>Add Resource</button>
-      )}
+    <div className="container animate-fade-in">
+      <div className="d-flex justify-content-between align-items-center mb-4">
+        <h1>Resources</h1>
+        {user?.role === 'ADMIN' && (
+          <button className="btn btn-primary" onClick={() => setShowForm(true)}>+ Add Resource</button>
+        )}
+      </div>
 
       {/* Filters */}
-      <div className="row mb-3">
-        <div className="col">
-          <input type="text" className="form-control" placeholder="Type" value={filters.type}
-            onChange={e => setFilters({ ...filters, type: e.target.value })} />
-        </div>
-        <div className="col">
-          <input type="number" className="form-control" placeholder="Min Capacity" value={filters.capacity}
-            onChange={e => setFilters({ ...filters, capacity: e.target.value })} />
-        </div>
-        <div className="col">
-          <input type="text" className="form-control" placeholder="Location" value={filters.location}
-            onChange={e => setFilters({ ...filters, location: e.target.value })} />
+      <div className="card mb-4">
+        <div className="row g-3">
+          <div className="col-md-4">
+            <label>Filter by Type</label>
+            <input type="text" placeholder="e.g. LAB, ROOM" value={filters.type}
+              onChange={e => setFilters({ ...filters, type: e.target.value })} />
+          </div>
+          <div className="col-md-4">
+            <label>Minimum Capacity</label>
+            <input type="number" placeholder="0" value={filters.capacity}
+              onChange={e => setFilters({ ...filters, capacity: e.target.value })} />
+          </div>
+          <div className="col-md-4">
+            <label>Location</label>
+            <input type="text" placeholder="e.g. Building A" value={filters.location}
+              onChange={e => setFilters({ ...filters, location: e.target.value })} />
+          </div>
         </div>
       </div>
 
-      <table className="table table-striped">
-        <thead>
-          <tr>
-            <th>Name</th>
-            <th>Type</th>
-            <th>Capacity</th>
-            <th>Location</th>
-            <th>Status</th>
-            {user?.role === 'ADMIN' && <th>Actions</th>}
-          </tr>
-        </thead>
-        <tbody>
-          {resources.map(res => (
-            <tr key={res.id}>
-              <td>{res.name}</td>
-              <td>{res.type}</td>
-              <td>{res.capacity}</td>
-              <td>{res.location}</td>
-              <td>{res.status}</td>
+      <div className="resource-grid">
+        {resources.map(res => (
+          <div key={res.id} className="card resource-card">
+            <div className="resource-header">
+              <h3>{res.name}</h3>
+              <span className={`badge ${res.status === 'ACTIVE' ? 'badge-success' : 'badge-danger'}`}>
+                {res.status}
+              </span>
+            </div>
+            <div className="resource-body">
+              <div className="resource-info">
+                <span className="info-label">Type:</span> <span>{res.type}</span>
+              </div>
+              <div className="resource-info">
+                <span className="info-label">Capacity:</span> <span>{res.capacity} students</span>
+              </div>
+              <div className="resource-info">
+                <span className="info-label">Location:</span> <span>{res.location}</span>
+              </div>
+            </div>
+            <div className="resource-footer">
+              <button className="btn btn-outline w-100 mb-2">Book Now</button>
               {user?.role === 'ADMIN' && (
-                <td>
-                  <button className="btn btn-sm btn-warning me-2" onClick={() => handleEdit(res)}>Edit</button>
-                  <button className="btn btn-sm btn-danger" onClick={() => handleDelete(res.id)}>Delete</button>
-                </td>
+                <div className="admin-actions d-flex gap-2">
+                  <button className="btn btn-sm btn-outline flex-grow-1" onClick={() => handleEdit(res)}>Edit</button>
+                  <button className="btn btn-sm btn-outline text-danger flex-grow-1" onClick={() => handleDelete(res.id)}>Delete</button>
+                </div>
               )}
-            </tr>
-          ))}
-        </tbody>
-      </table>
+            </div>
+          </div>
+        ))}
+      </div>
+
 
       {showForm && (
         <ResourceForm resource={editingResource} onClose={handleFormClose} />

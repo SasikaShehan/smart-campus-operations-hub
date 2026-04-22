@@ -31,38 +31,51 @@ const NotificationBell = () => {
   };
 
   return (
-    <div className="dropdown me-3">
+    <div className="notification-bell-container">
       <button
-        className="btn btn-secondary position-relative"
+        className="bell-btn"
         onClick={() => setShowDropdown(!showDropdown)}
       >
-        <i className="bi bi-bell"></i>
+        <span className="bell-icon">🔔</span>
         {notifications.length > 0 && (
-          <span className="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger">
+          <span className="notification-count animate-fade-in">
             {notifications.length}
           </span>
         )}
       </button>
+      
       {showDropdown && (
-        <ul className="dropdown-menu show position-absolute end-0 mt-2" style={{ width: '300px' }}>
-          {notifications.length === 0 ? (
-            <li className="dropdown-item">No new notifications</li>
-          ) : (
-            notifications.map(notif => (
-              <li key={notif.id} className="dropdown-item">
-                <div>
-                  <strong>{notif.title}</strong>
-                  <p className="small">{notif.message}</p>
-                  <button className="btn btn-sm btn-outline-primary" onClick={() => handleMarkRead(notif.id)}>
-                    Mark read
+        <div className="notification-dropdown animate-fade-in">
+          <div className="dropdown-header">
+            <h3>Notifications</h3>
+            <span className="unread-badge">{notifications.length} New</span>
+          </div>
+          
+          <div className="notification-list">
+            {notifications.length === 0 ? (
+              <div className="empty-notifications">
+                <span className="empty-icon">✨</span>
+                <p>You're all caught up!</p>
+              </div>
+            ) : (
+              notifications.map(notif => (
+                <div key={notif.id} className="notification-item">
+                  <div className="notif-details">
+                    <span className="notif-title">{notif.title}</span>
+                    <p className="notif-message">{notif.message}</p>
+                    <span className="notif-date">{new Date(notif.createdAt).toLocaleTimeString()}</span>
+                  </div>
+                  <button className="mark-read-btn" onClick={() => handleMarkRead(notif.id)} title="Mark as read">
+                    ✓
                   </button>
                 </div>
-              </li>
-            ))
-          )}
-        </ul>
+              ))
+            )}
+          </div>
+        </div>
       )}
     </div>
+
   );
 };
 

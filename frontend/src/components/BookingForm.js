@@ -27,32 +27,49 @@ const BookingForm = () => {
   };
 
   return (
-    <div className="container mt-4">
-      <h2>Request a Booking</h2>
-      <form onSubmit={handleSubmit}>
-        <div className="mb-3">
-          <label className="form-label">Resource ID</label>
-          <input type="number" className="form-control" name="resourceId" value={formData.resourceId} onChange={handleChange} required />
+    <div className="container animate-fade-in">
+      <div className="form-container-card card">
+        <div className="section-header">
+          <h1>Request Facility Booking</h1>
+          <p className="text-muted">Fill in the details to reserve a campus resource</p>
         </div>
-        <div className="mb-3">
-          <label className="form-label">Start Time</label>
-          <input type="datetime-local" className="form-control" name="startTime" value={formData.startTime} onChange={handleChange} required />
-        </div>
-        <div className="mb-3">
-          <label className="form-label">End Time</label>
-          <input type="datetime-local" className="form-control" name="endTime" value={formData.endTime} onChange={handleChange} required />
-        </div>
-        <div className="mb-3">
-          <label className="form-label">Purpose</label>
-          <textarea className="form-control" name="purpose" value={formData.purpose} onChange={handleChange} required />
-        </div>
-        <div className="mb-3">
-          <label className="form-label">Expected Attendees</label>
-          <input type="number" className="form-control" name="expectedAttendees" value={formData.expectedAttendees} onChange={handleChange} />
-        </div>
-        <button type="submit" className="btn btn-primary">Submit</button>
-      </form>
+
+        <form onSubmit={handleSubmit} className="modern-form">
+          <div className="form-grid">
+            <div className="form-group">
+              <label>Select Resource</label>
+              <input type="text" name="resourceId" value={formData.resourceId} onChange={handleChange} required placeholder="Resource ID or Name" />
+            </div>
+            
+            <div className="form-group">
+              <label>Expected Attendees</label>
+              <input type="number" name="expectedAttendees" value={formData.expectedAttendees} onChange={handleChange} placeholder="e.g. 50" />
+            </div>
+            
+            <div className="form-group">
+              <label>Start Date & Time</label>
+              <input type="datetime-local" name="startTime" value={formData.startTime} onChange={handleChange} required />
+            </div>
+            
+            <div className="form-group">
+              <label>End Date & Time</label>
+              <input type="datetime-local" name="endTime" value={formData.endTime} onChange={handleChange} required />
+            </div>
+
+            <div className="form-group full-width">
+              <label>Booking Purpose</label>
+              <textarea name="purpose" value={formData.purpose} onChange={handleChange} required rows="4" placeholder="Briefly describe the purpose of this booking..." />
+            </div>
+          </div>
+
+          <div className="form-actions mt-4">
+            <button type="submit" className="btn btn-primary w-100">Confirm Booking Request</button>
+            <button type="button" className="btn btn-outline w-100 mt-2" onClick={() => navigate('/resources')}>Cancel</button>
+          </div>
+        </form>
+      </div>
     </div>
+
   );
 };
 

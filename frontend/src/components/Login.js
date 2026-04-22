@@ -27,16 +27,52 @@ const Login = () => {
   };
 
   return (
-    <div className="container text-center mt-5">
-      <h2>Smart Campus Operations Hub</h2>
-      <p>Please login to continue</p>
-      <GoogleLogin
-        onSuccess={onSuccess}
-        onError={onError}
-        useOneTap
-      />
+    <div className="login-page">
+      <div className="login-card animate-fade-in">
+        <div className="login-brand">
+          <div className="brand-icon">🎓</div>
+          <h1>SmartCampus</h1>
+          <p>Operations & Facility Management</p>
+        </div>
+        
+        <div className="login-content">
+          <h2>Welcome Back</h2>
+          <p className="login-subtitle">Sign in to manage your campus bookings and reports</p>
+          
+          <div className="google-login-wrapper">
+            <GoogleLogin
+              onSuccess={onSuccess}
+              onError={onError}
+              useOneTap
+              theme="outline"
+              size="large"
+              width="100%"
+            />
+          </div>
+          
+          <div className="login-features">
+            <div className="feature-item">
+              <span className="feature-icon">📅</span>
+              <span>Easy Facility Bookings</span>
+            </div>
+            <div className="feature-item">
+              <span className="feature-icon">🚨</span>
+              <span>Fast Incident Reporting</span>
+            </div>
+            <div className="feature-item">
+              <span className="feature-icon">🔔</span>
+              <span>Real-time Notifications</span>
+            </div>
+          </div>
+        </div>
+        
+        <div className="login-footer">
+          <p>© 2026 Faculty of Computing - SLIIT</p>
+        </div>
+      </div>
     </div>
   );
 };
+
 
 export default Login;

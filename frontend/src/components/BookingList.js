@@ -37,43 +37,62 @@ const BookingList = () => {
   };
 
   return (
-    <div className="container mt-4">
-      <h2>{isAdmin ? 'All Bookings' : 'My Bookings'}</h2>
-      <table className="table">
-        <thead>
-          <tr>
-            <th>Resource</th>
-            <th>Start</th>
-            <th>End</th>
-            <th>Purpose</th>
-            <th>Status</th>
-            {isAdmin && <th>Actions</th>}
-          </tr>
-        </thead>
-        <tbody>
-          {bookings.map(booking => (
-            <tr key={booking.id}>
-              <td>{booking.resource?.name}</td>
-              <td>{new Date(booking.startTime).toLocaleString()}</td>
-              <td>{new Date(booking.endTime).toLocaleString()}</td>
-              <td>{booking.purpose}</td>
-              <td>
-                <span className={`badge bg-${booking.status === 'APPROVED' ? 'success' : booking.status === 'REJECTED' ? 'danger' : 'warning'}`}>
-                  {booking.status}
-                </span>
-                {booking.rejectionReason && <small className="d-block text-danger">{booking.rejectionReason}</small>}
-              </td>
-              {isAdmin && booking.status === 'PENDING' && (
-                <td>
-                  <button className="btn btn-sm btn-success me-2" onClick={() => handleApprove(booking.id)}>Approve</button>
-                  <button className="btn btn-sm btn-danger" onClick={() => handleReject(booking.id)}>Reject</button>
-                </td>
+    <div className="container animate-fade-in">
+      <div className="d-flex justify-content-between align-items-center mb-4">
+        <h1>{isAdmin ? 'All Bookings' : 'My Bookings'}</h1>
+      </div>
+
+      <div className="booking-grid">
+        {bookings.map(booking => (
+          <div key={booking.id} className="card booking-card">
+            <div className="booking-header">
+              <div className="resource-name">
+                <span className="info-label">Resource</span>
+                <h3>{booking.resource?.name}</h3>
+              </div>
+              <span className={`badge ${
+                booking.status === 'APPROVED' ? 'badge-success' : 
+                booking.status === 'REJECTED' ? 'badge-danger' : 
+                'badge-warning'
+              }`}>
+                {booking.status}
+              </span>
+            </div>
+
+            <div className="booking-body">
+              <div className="booking-time">
+                <div className="time-block">
+                  <span className="info-label">Start Time</span>
+                  <span>{new Date(booking.startTime).toLocaleString()}</span>
+                </div>
+                <div className="time-block">
+                  <span className="info-label">End Time</span>
+                  <span>{new Date(booking.endTime).toLocaleString()}</span>
+                </div>
+              </div>
+              <div className="booking-purpose">
+                <span className="info-label">Purpose</span>
+                <p>{booking.purpose}</p>
+              </div>
+              {booking.rejectionReason && (
+                <div className="rejection-box">
+                  <span className="info-label text-danger">Rejection Reason</span>
+                  <p className="text-danger">{booking.rejectionReason}</p>
+                </div>
               )}
-            </tr>
-          ))}
-        </tbody>
-      </table>
+            </div>
+
+            {isAdmin && booking.status === 'PENDING' && (
+              <div className="booking-footer d-flex gap-2">
+                <button className="btn btn-primary flex-grow-1" onClick={() => handleApprove(booking.id)}>Approve</button>
+                <button className="btn btn-outline text-danger flex-grow-1" onClick={() => handleReject(booking.id)}>Reject</button>
+              </div>
+            )}
+          </div>
+        ))}
+      </div>
     </div>
+
   );
 };
 
