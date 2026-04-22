@@ -21,9 +21,11 @@ public class SecurityConfig {
                 .authorizeHttpRequests(auth -> auth
                         .requestMatchers("/api/auth/**").permitAll()
                         .requestMatchers("/api/public/**").permitAll()
+                        .requestMatchers(org.springframework.http.HttpMethod.GET, "/api/resources/**").permitAll()
                         .requestMatchers("/api/admin/**").hasAuthority("ADMIN")
                         .requestMatchers("/api/technician/**").hasAuthority("TECHNICIAN")
                         .anyRequest().authenticated())
+
                 .oauth2Login(oauth2 -> oauth2
                         .successHandler(oauth2SuccessHandler()));
 
