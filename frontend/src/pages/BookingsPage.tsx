@@ -113,7 +113,7 @@ export default function BookingsPage() {
     <div className="space-y-6 animate-fade-in">
       <div className="flex items-center justify-between">
         <div>
-          <h1 className="font-display text-2xl font-bold">Bookings</h1>
+          <h1 className="font-display text-2xl font-bold">Bookings.</h1>
           <p className="text-muted-foreground text-sm mt-1">{isAdmin ? "Manage all booking requests." : "Your resource bookings."}</p>
         </div>
         <Dialog open={open} onOpenChange={setOpen}>
