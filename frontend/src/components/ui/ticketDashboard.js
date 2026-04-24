@@ -15,10 +15,10 @@ const MOCK_TICKETS = [
 ];
 
 const PRIORITY_CONFIG = {
-  CRITICAL: { color: "text-red-400", bg: "bg-red-500/10 border-red-500/20", dot: "bg-red-500", bar: "bg-red-500" },
-  HIGH:     { color: "text-orange-400", bg: "bg-orange-500/10 border-orange-500/20", dot: "bg-orange-500", bar: "bg-orange-500" },
-  MEDIUM:   { color: "text-yellow-400", bg: "bg-yellow-500/10 border-yellow-500/20", dot: "bg-yellow-400", bar: "bg-yellow-400" },
-  LOW:      { color: "text-slate-400", bg: "bg-slate-500/10 border-slate-500/20", dot: "bg-slate-500", bar: "bg-slate-500" },
+  CRITICAL: { color: "text-red-600", bg: "bg-red-500/10 border-red-500/20", dot: "bg-red-500", bar: "bg-red-500" },
+  HIGH:     { color: "text-orange-200", bg: "bg-orange-500/10 border-orange-500/20", dot: "bg-orange-500", bar: "bg-orange-500" },
+  MEDIUM:   { color: "text-yellow-200", bg: "bg-yellow-500/10 border-yellow-500/20", dot: "bg-yellow-400", bar: "bg-yellow-400" },
+  LOW:      { color: "text-slate-100", bg: "bg-slate-500/10 border-slate-500/20", dot: "bg-slate-500", bar: "bg-slate-500" },
 };
 
 const STATUS_CONFIG = {
