@@ -102,10 +102,10 @@ export default function FacilitiesPage() {
           <SelectTrigger className="w-[180px]"><SelectValue placeholder="Type" /></SelectTrigger>
           <SelectContent>
             <SelectItem value="ALL">All Types</SelectItem>
-            <SelectItem value="LECTURE_HALL">Lecture Hall.</SelectItem>
-            <SelectItem value="LAB">Lab</SelectItem>
-            <SelectItem value="MEETING_ROOM">Meeting Room</SelectItem>
-            <SelectItem value="EQUIPMENT">Equipment</SelectItem>
+            <SelectItem value="LECTURE_HALL">Lecture Halls</SelectItem>
+            <SelectItem value="LAB">Lab Halls</SelectItem>
+            <SelectItem value="MEETING_ROOM">Meeting Rooms</SelectItem>
+            <SelectItem value="EQUIPMENT">Equipments</SelectItem>
           </SelectContent>
         </Select>
         <Select value={statusFilter} onValueChange={setStatusFilter}>
