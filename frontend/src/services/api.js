@@ -27,6 +27,10 @@ export const getResource = (id) => api.get(`/resources/${id}`);
 export const createResource = (data) => api.post('/resources', data);
 export const updateResource = (id, data) => api.put(`/resources/${id}`, data);
 export const deleteResource = (id) => api.delete(`/resources/${id}`);
+export const getResourceStats = () => api.get('/resources/stats');
+export const getAvailableResources = () => api.get('/resources/available');
+export const getResourcesByCategory = (category) => api.get(`/resources/category/${category}`);
+export const getMaintenanceDue = () => api.get('/resources/maintenance-due');
 
 // ========== BOOKINGS ==========
 export const createBooking = (data) => api.post('/bookings', data);
