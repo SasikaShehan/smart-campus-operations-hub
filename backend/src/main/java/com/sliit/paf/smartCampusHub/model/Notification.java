@@ -32,10 +32,10 @@ public class Notification {
 
     private String referenceId;
 
-    @Builder.Default  // ✅ ADD THIS
+    @Builder.Default  
     private boolean isRead = false;
 
-    @Builder.Default  // ✅ ADD THIS
+    @Builder.Default  
     @Column(nullable = false)
     private LocalDateTime createdAt = LocalDateTime.now();
 
