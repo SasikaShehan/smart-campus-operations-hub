@@ -21,7 +21,7 @@ public class Booking {
     @JoinColumn(name = "user_id", nullable = false)
     private User user;
 
-    // ✅ REPLACE resourceType and resourceName with Facility relationship
+    // REPLACE resourceType and resourceName with Facility relationship
     @ManyToOne
     @JoinColumn(name = "facility_id", nullable = false)
     private Facility facility;
