@@ -1,6 +1,6 @@
 package com.sliit.paf.smartCampusHub.model;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;  // ✅ ADD THIS IMPORT
+import com.fasterxml.jackson.annotation.JsonIgnore; 
 import jakarta.persistence.*;
 import lombok.*;
 import java.time.LocalDateTime;
@@ -40,7 +40,7 @@ public class Facility {
 
     private String imageUrl;
 
-    // ✅ ADD @JsonIgnore to break the infinite loop
+    //  ADD @JsonIgnore to break the infinite loop
     @JsonIgnore
     @Builder.Default
     @OneToMany(mappedBy = "facility", cascade = {CascadeType.PERSIST, CascadeType.MERGE})
