@@ -65,12 +65,6 @@ export default function TicketsPage() {
     enabled: isAdmin,
   });
 
-  const { data: detailTicket = null } = useQuery<Ticket>({
-    queryKey: ["ticket", detailTicketId],
-    queryFn: () => api.get(`/tickets/${detailTicketId}`),
-    enabled: !!detailTicketId,
-  });
-
   const createMutation = useMutation({
     mutationFn: (data: any) => {
       const facility = facilities.find((f: any) => f.id.toString() === data.resourceId);
@@ -131,7 +125,6 @@ export default function TicketsPage() {
       api.put(`/tickets/${id}/status`, { status, notes }),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["tickets"] });
-      queryClient.invalidateQueries({ queryKey: ["ticket", detailTicketId] });
       toast.success("Ticket status updated.");
     },
     onError: (error: any) => toast.error(error.message),
@@ -141,7 +134,6 @@ export default function TicketsPage() {
     mutationFn: (id: string) => api.put(`/tickets/${id}/assign`, { technicianId: Number(user?.id) }),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["tickets"] });
-      queryClient.invalidateQueries({ queryKey: ["ticket", detailTicketId] });
       toast.success("Ticket accepted — now In Progress.");
     },
     onError: (error: any) => toast.error(error.message),
@@ -163,7 +155,6 @@ export default function TicketsPage() {
     mutationFn: (id: string) => api.put(`/tickets/${id}/assign`, { technicianId: user?.id }),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["tickets"] });
-      queryClient.invalidateQueries({ queryKey: ["ticket", detailTicketId] });
       toast.success("Ticket assigned to you.");
     },
     onError: (error: any) => toast.error(error.message),
@@ -173,7 +164,7 @@ export default function TicketsPage() {
     mutationFn: ({ id, content }: { id: string; content: string }) =>
       api.post(`/tickets/${id}/comments`, { content }),
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ["ticket", detailTicketId] });
+      queryClient.invalidateQueries({ queryKey: ["tickets"] });
       setCommentText("");
     },
     onError: (error: any) => toast.error(error.message),
@@ -225,7 +216,7 @@ export default function TicketsPage() {
 
       <div className="space-y-3">
         {displayed.map((t) => (
-          <Card key={t.id} className="glass-card cursor-pointer hover:shadow-md transition-shadow" onClick={() => setDetailTicketId(t.id)}>
+          <Card key={t.id} className="glass-card cursor-pointer hover:shadow-md transition-shadow" onClick={() => setDetailTicketId(String(t.id))}>
             <CardContent className="py-4 px-5 flex flex-col sm:flex-row sm:items-center justify-between gap-3">
               <div className="flex items-start gap-3">
                 <div className="w-9 h-9 rounded-lg bg-muted flex items-center justify-center mt-0.5">
@@ -365,71 +356,75 @@ export default function TicketsPage() {
       {/* Detail Dialog */}
       <Dialog open={!!detailTicketId} onOpenChange={(o) => !o && setDetailTicketId(null)}>
         <DialogContent className="max-w-lg max-h-[80vh] overflow-y-auto">
-          {detailTicket && (
-            <>
-              <DialogHeader>
-                <DialogTitle className="flex items-center gap-2">
-                  {detailTicket.title}<StatusBadge status={detailTicket.status} />
-                </DialogTitle>
-              </DialogHeader>
-              <div className="space-y-4">
-                <div className="text-sm space-y-1">
-                  <p><span className="text-muted-foreground">Category:</span> {detailTicket.category.replace(/_/g, " ")}</p>
-                  <p><span className="text-muted-foreground">Priority:</span> <StatusBadge status={detailTicket.priority} /></p>
-                  <p><span className="text-muted-foreground">Reported by:</span> {detailTicket.reportedBy?.name}</p>
-                  {detailTicket.assignedTo && <p><span className="text-muted-foreground">Assigned to:</span> {detailTicket.assignedTo.name}</p>}
-                  <p className="pt-2">{detailTicket.description}</p>
-                  {detailTicket.rejectionReason && <p className="text-destructive"><span className="text-muted-foreground">Rejection reason:</span> {detailTicket.rejectionReason}</p>}
-                  {detailTicket.resolutionNotes && <p className="text-success"><span className="text-muted-foreground">Resolution:</span> {detailTicket.resolutionNotes}</p>}
-                </div>
-
-                {(isAdmin || isTech) && (
-                  <div className="flex flex-wrap gap-2 border-t border-border pt-3">
-                    {detailTicket.status === "OPEN" && isTech && (
-                      <Button size="sm" onClick={() => assignMutation.mutate(detailTicket.id)} disabled={assignMutation.isPending}>
-                        <Wrench className="w-3 h-3 mr-1" />Assign to me
-                      </Button>
-                    )}
-                    {detailTicket.status === "IN_PROGRESS" && (isTech || isAdmin) && (
-                      <Button size="sm" className="bg-success text-success-foreground"
-                        onClick={() => updateStatusMutation.mutate({ id: detailTicket.id, status: "RESOLVED" })}
-                        disabled={updateStatusMutation.isPending}>
-                        Mark Resolved
-                      </Button>
-                    )}
+          {(() => {
+            const t = allTickets.find((t) => String(t.id) === String(detailTicketId));
+            if (!t) return <div className="flex items-center justify-center h-32"><Loader2 className="w-6 h-6 animate-spin text-primary" /></div>;
+            return (
+              <>
+                <DialogHeader>
+                  <DialogTitle className="flex items-center gap-2">
+                    {t.title}<StatusBadge status={t.status} />
+                  </DialogTitle>
+                </DialogHeader>
+                <div className="space-y-4">
+                  <div className="text-sm space-y-1">
+                    <p><span className="text-muted-foreground">Category:</span> {t.category.replace(/_/g, " ")}</p>
+                    <p><span className="text-muted-foreground">Priority:</span> <StatusBadge status={t.priority} /></p>
+                    <p><span className="text-muted-foreground">Reported by:</span> {t.reportedBy?.name}</p>
+                    {t.assignedTo && <p><span className="text-muted-foreground">Assigned to:</span> {t.assignedTo.name}</p>}
+                    <p className="pt-2">{t.description}</p>
+                    {t.rejectionReason && <p className="text-destructive"><span className="text-muted-foreground">Rejection reason:</span> {t.rejectionReason}</p>}
+                    {t.resolutionNotes && <p className="text-success"><span className="text-muted-foreground">Resolution:</span> {t.resolutionNotes}</p>}
                   </div>
-                )}
 
-                <div className="border-t border-border pt-3">
-                  <p className="text-sm font-medium mb-2">Comments ({(detailTicket.comments || []).length})</p>
-                  <div className="space-y-2 max-h-40 overflow-y-auto">
-                    {(detailTicket.comments || []).map((c: any) => (
-                      <div key={c.id} className="bg-muted rounded-lg p-2.5">
-                        <div className="flex justify-between text-xs text-muted-foreground mb-1">
-                          <span className="font-medium">{c.author?.name || c.userName}</span>
-                          <span>{new Date(c.createdAt).toLocaleString()}</span>
+                  {(isAdmin || isTech) && (
+                    <div className="flex flex-wrap gap-2 border-t border-border pt-3">
+                      {t.status === "OPEN" && isTech && (
+                        <Button size="sm" onClick={() => assignMutation.mutate(String(t.id))} disabled={assignMutation.isPending}>
+                          <Wrench className="w-3 h-3 mr-1" />Assign to me
+                        </Button>
+                      )}
+                      {t.status === "IN_PROGRESS" && (isTech || isAdmin) && (
+                        <Button size="sm" className="bg-success text-success-foreground"
+                          onClick={() => updateStatusMutation.mutate({ id: String(t.id), status: "RESOLVED" })}
+                          disabled={updateStatusMutation.isPending}>
+                          Mark Resolved
+                        </Button>
+                      )}
+                    </div>
+                  )}
+
+                  <div className="border-t border-border pt-3">
+                    <p className="text-sm font-medium mb-2">Comments ({(t.comments || []).length})</p>
+                    <div className="space-y-2 max-h-40 overflow-y-auto">
+                      {(t.comments || []).map((c: any) => (
+                        <div key={c.id} className="bg-muted rounded-lg p-2.5">
+                          <div className="flex justify-between text-xs text-muted-foreground mb-1">
+                            <span className="font-medium">{c.author?.name || c.userName}</span>
+                            <span>{new Date(c.createdAt).toLocaleString()}</span>
+                          </div>
+                          <p className="text-sm">{c.content}</p>
                         </div>
-                        <p className="text-sm">{c.content}</p>
-                      </div>
-                    ))}
-                  </div>
-                  <div className="flex gap-2 mt-3">
-                    <Input
-                      placeholder="Add a comment..."
-                      value={commentText}
-                      onChange={(e) => setCommentText(e.target.value)}
-                      onKeyDown={(e) => e.key === "Enter" && commentMutation.mutate({ id: detailTicket.id, content: commentText })}
-                    />
-                    <Button size="icon" variant="outline"
-                      onClick={() => commentMutation.mutate({ id: detailTicket.id, content: commentText })}
-                      disabled={commentMutation.isPending}>
-                      <Send className="w-4 h-4" />
-                    </Button>
+                      ))}
+                    </div>
+                    <div className="flex gap-2 mt-3">
+                      <Input
+                        placeholder="Add a comment..."
+                        value={commentText}
+                        onChange={(e) => setCommentText(e.target.value)}
+                        onKeyDown={(e) => e.key === "Enter" && commentMutation.mutate({ id: String(t.id), content: commentText })}
+                      />
+                      <Button size="icon" variant="outline"
+                        onClick={() => commentMutation.mutate({ id: String(t.id), content: commentText })}
+                        disabled={commentMutation.isPending}>
+                        <Send className="w-4 h-4" />
+                      </Button>
+                    </div>
                   </div>
                 </div>
-              </div>
-            </>
-          )}
+              </>
+            );
+          })()}
         </DialogContent>
       </Dialog>
     </div>

@@ -82,12 +82,13 @@ public class TicketController {
             
             // Check permission: owner, assigned technician, or admin
             boolean isOwner = ticket.getReportedBy().getId().equals(currentUser.getId());
-            boolean isAssigned = ticket.getAssignedTo() != null && 
+            boolean isAssigned = ticket.getAssignedTo() != null &&
                                  ticket.getAssignedTo().getId().equals(currentUser.getId());
-            boolean isAdmin = currentUser.getRole().equals("ADMIN") || 
+            boolean isAdmin = currentUser.getRole().equals("ADMIN") ||
                               currentUser.getRole().equals("MANAGER");
-            
-            if (!isOwner && !isAssigned && !isAdmin) {
+            boolean isTechnician = currentUser.getRole().equals("TECHNICIAN");
+
+            if (!isOwner && !isAssigned && !isAdmin && !isTechnician) {
                 return ResponseEntity.status(403).body(Map.of("error", "Access denied"));
             }
             

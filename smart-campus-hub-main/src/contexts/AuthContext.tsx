@@ -68,11 +68,12 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
   const emailLogin = useCallback(async (data: any) => {
     try {
       const response = await api.post("/auth/login", data);
-      setAuthData(response.token, response.role, response.name, response.email);
+      localStorage.setItem("campus_token", response.token);
+      await fetchUser();
     } catch (error: any) {
       throw error;
     }
-  }, []);
+  }, [fetchUser]);
 
   const registerUser = useCallback(async (data: any) => {
     try {
