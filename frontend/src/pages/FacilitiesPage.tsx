@@ -75,7 +75,7 @@ export default function FacilitiesPage() {
     <div className="space-y-6 animate-fade-in">
       <div className="flex items-center justify-between">
         <div>
-          <h1 className="font-display text-2xl font-bold">Facilities & Assets</h1>
+          <h1 className="font-display text-2xl font-bold">Facilities and Assets</h1>
           <p className="text-muted-foreground text-sm mt-1">Browse and search bookable campus resources.</p>
         </div>
         {isAdmin && (
