@@ -43,7 +43,7 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
             var user = userRepository.findByEmail(email).orElse(null);
 
             if (user != null && jwtService.isTokenValid(jwt, user)) {
-                // ✅ Pass the user object to assign the correct role
+                //  Pass the user object to assign the correct role
                 var authToken = jwtService.getAuthentication(jwt, user);
                 SecurityContextHolder.getContext().setAuthentication(authToken);
             }
