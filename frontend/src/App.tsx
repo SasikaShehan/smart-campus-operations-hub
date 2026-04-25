@@ -15,6 +15,7 @@ import AnalyticsPage from "@/pages/AnalyticsPage";
 import CheckInPage from "@/pages/CheckInPage";
 import OAuthSuccess from "@/pages/OAuthSuccess";
 import NotFound from "./pages/NotFound.tsx";
+import TwoFactorSettingsPage from "./pages/TwoFactorSettingsPage.tsx";
 
 const queryClient = new QueryClient();
 
@@ -40,6 +41,7 @@ const App = () => (
               <Route path="/notifications" element={<NotificationsPage />} />
               <Route path="/analytics" element={<AnalyticsPage />} />
               <Route path="/check-in" element={<CheckInPage />} />
+              <Route path="/security" element={<TwoFactorSettingsPage />} />
             </Route>
             <Route path="/oauth-success" element={<OAuthSuccess />} />
             <Route path="*" element={<NotFound />} />

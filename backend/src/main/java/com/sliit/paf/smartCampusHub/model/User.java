@@ -29,5 +29,10 @@ public class User {
     private String role;        // USER / ADMIN
     private String provider;    // GOOGLE
     private String providerId;  // Google unique ID
+    
+    // Two-Factor Authentication
+    private boolean twoFactorEnabled;
+    private String twoFactorSecret;
+    private boolean isVerified;
 
 }
