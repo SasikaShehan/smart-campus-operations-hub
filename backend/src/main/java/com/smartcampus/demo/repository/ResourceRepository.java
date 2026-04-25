@@ -32,6 +32,33 @@ public interface ResourceRepository extends MongoRepository<Resource, String> {
     @Query("{ 'warrantyExpiry': { $lte: ?0 } }")
     List<Resource> findByWarrantyExpiryBefore(LocalDate date);
 
-    // Paginated search
+    // ========== Advanced Search & Pagination ==========
+    @Query("{ $or: [ " +
+            "{ 'name': { $regex: ?0, $options: 'i' } }, " +
+            "{ 'assetTag': { $regex: ?0, $options: 'i' } }, " +
+            "{ 'category': { $regex: ?0, $options: 'i' } }, " +
+            "{ 'building': { $regex: ?0, $options: 'i' } }, " +
+            "{ 'description': { $regex: ?0, $options: 'i' } } " +
+            "] }")
+    Page<Resource> searchAll(String search, Pageable pageable);
+
+    @Query("{ $and: [ " +
+            "{ $or: [ " +
+            "{ 'name': { $regex: ?0, $options: 'i' } }, " +
+            "{ 'assetTag': { $regex: ?0, $options: 'i' } }, " +
+            "{ 'category': { $regex: ?0, $options: 'i' } } " +
+            "] }, " +
+            "{ $or: [ " +
+            "{ 'type': { $regex: ?1, $options: 'i' } }, " +
+            "{ 'category': { $regex: ?1, $options: 'i' } } " +
+            "] }, " +
+            "{ $or: [ " +
+            "{ 'status': ?2 }, " +
+            "{ $expr: { $eq: [?2, null] } } " +
+            "] } " +
+            "] }")
+    Page<Resource> advancedSearch(String search, String type, String status, Pageable pageable);
+
+    // Paginated search (legacy)
     Page<Resource> findAll(String type, String category, String status, String search, Pageable pageable);
 }
