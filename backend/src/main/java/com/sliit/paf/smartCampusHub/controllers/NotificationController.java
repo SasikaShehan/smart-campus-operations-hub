@@ -72,7 +72,7 @@ public class NotificationController {
     public ResponseEntity<?> deleteNotification(@PathVariable Long id, Authentication auth) {
         User user = getUserFromAuth(auth);
         notificationService.deleteNotification(id, user.getId());
-        return ResponseEntity.ok(Map.of("message", "Notification deleted"));
+        return ResponseEntity.ok(Map.of("message", "That SpecificNotification deleted"));
     }
 
     // Helper method
