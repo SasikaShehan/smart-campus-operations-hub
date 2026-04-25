@@ -45,6 +45,13 @@ export const advancedSearch = (search, type, status, page = 0, size = 10, sortBy
 
 export const getFilterOptions = () => api.get('/resources/filter-options');
 
+// ========== BULK OPERATIONS ==========
+export const bulkCreateResources = (resources) => api.post('/resources/bulk', resources);
+export const bulkUpdateResources = (resources) => api.put('/resources/bulk', resources);
+export const bulkDeleteResources = (ids) => api.delete('/resources/bulk', { data: ids });
+export const bulkUpdateStatus = (ids, status) => api.put('/resources/bulk/status', { ids, status });
+export const bulkUpdateCondition = (ids, condition) => api.put('/resources/bulk/condition', { ids, condition });
+
 // ========== BOOKINGS ==========
 export const createBooking = (data) => api.post('/bookings', data);
 export const getMyBookings = () => api.get('/bookings/my');
