@@ -32,6 +32,19 @@ export const getAvailableResources = () => api.get('/resources/available');
 export const getResourcesByCategory = (category) => api.get(`/resources/category/${category}`);
 export const getMaintenanceDue = () => api.get('/resources/maintenance-due');
 
+// ========== SEARCH & PAGINATION ==========
+export const searchResources = (search, page = 0, size = 10, sortBy = 'name', sortDir = 'asc') => 
+    api.get('/resources/search', { 
+        params: { search, page, size, sortBy, sortDir } 
+    });
+
+export const advancedSearch = (search, type, status, page = 0, size = 10, sortBy = 'name', sortDir = 'asc') => 
+    api.get('/resources/advanced-search', { 
+        params: { search, type, status, page, size, sortBy, sortDir } 
+    });
+
+export const getFilterOptions = () => api.get('/resources/filter-options');
+
 // ========== BOOKINGS ==========
 export const createBooking = (data) => api.post('/bookings', data);
 export const getMyBookings = () => api.get('/bookings/my');
