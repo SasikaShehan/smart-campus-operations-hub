@@ -52,6 +52,13 @@ export const bulkDeleteResources = (ids) => api.delete('/resources/bulk', { data
 export const bulkUpdateStatus = (ids, status) => api.put('/resources/bulk/status', { ids, status });
 export const bulkUpdateCondition = (ids, condition) => api.put('/resources/bulk/condition', { ids, condition });
 
+// ========== REPORTS ==========
+export const getResourceSummary = () => api.get('/reports/summary');
+export const getMaintenanceReport = () => api.get('/reports/maintenance');
+export const getAssetValueReport = () => api.get('/reports/asset-value');
+export const getCategoryBreakdown = () => api.get('/reports/category-breakdown');
+export const getAssignmentReport = () => api.get('/reports/assignment');
+
 // ========== BOOKINGS ==========
 export const createBooking = (data) => api.post('/bookings', data);
 export const getMyBookings = () => api.get('/bookings/my');
