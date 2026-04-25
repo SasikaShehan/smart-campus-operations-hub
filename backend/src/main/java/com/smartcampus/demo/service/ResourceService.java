@@ -28,6 +28,43 @@ public class ResourceService {
         return resourceRepository.findAll(type, category, status, search, pageable);
     }
 
+    // ========== Advanced Search Methods ==========
+
+    public Page<Resource> searchAll(String search, Pageable pageable) {
+        return resourceRepository.searchAll(search, pageable);
+    }
+
+    public Page<Resource> advancedSearch(String search, String type, String status, Pageable pageable) {
+        return resourceRepository.advancedSearch(search, type, status, pageable);
+    }
+
+    public List<String> getDistinctBuildings() {
+        return resourceRepository.findAll().stream()
+            .map(Resource::getBuilding)
+            .filter(b -> b != null && !b.isEmpty())
+            .distinct()
+            .sorted()
+            .toList();
+    }
+
+    public List<String> getDistinctFloors() {
+        return resourceRepository.findAll().stream()
+            .map(Resource::getFloor)
+            .filter(f -> f != null && !f.isEmpty())
+            .distinct()
+            .sorted()
+            .toList();
+    }
+
+    public List<String> getDistinctCategories() {
+        return resourceRepository.findAll().stream()
+            .map(Resource::getCategory)
+            .filter(c -> c != null && !c.isEmpty())
+            .distinct()
+            .sorted()
+            .toList();
+    }
+
     public Resource findById(String id) {
         return resourceRepository.findById(id)
                 .orElseThrow(() -> new RuntimeException("Resource not found"));
