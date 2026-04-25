@@ -63,7 +63,7 @@ public class NotificationController {
     public ResponseEntity<?> deleteAllRead(Authentication auth) {
         User user = getUserFromAuth(auth);
         notificationService.deleteAllRead(user.getId());
-        return ResponseEntity.ok(Map.of("message", "All read notifications deleted"));
+        return ResponseEntity.ok(Map.of("message", "Now All read notifications deleted"));
     }
 
     // Delete a specific notification
