@@ -65,6 +65,46 @@ public class ResourceService {
             .toList();
     }
 
+    // ========== Bulk Operations ==========
+
+    public List<Resource> findByIds(List<String> ids) {
+        return resourceRepository.findByIdIn(ids);
+    }
+
+    public List<Resource> bulkCreate(List<Resource> resources) {
+        for (Resource resource : resources) {
+            if (resource.getAssetTag() == null || resource.getAssetTag().isEmpty()) {
+                resource.setAssetTag(generateAssetTag());
+            }
+        }
+        return resourceRepository.saveAll(resources);
+    }
+
+    public List<Resource> bulkUpdate(List<Resource> resources) {
+        return resourceRepository.saveAll(resources);
+    }
+
+    public void bulkDelete(List<String> ids) {
+        List<Resource> resources = resourceRepository.findByIdIn(ids);
+        resourceRepository.deleteAll(resources);
+    }
+
+    public List<Resource> bulkUpdateStatus(List<String> ids, Resource.Status status) {
+        List<Resource> resources = resourceRepository.findByIdIn(ids);
+        for (Resource resource : resources) {
+            resource.setStatus(status);
+        }
+        return resourceRepository.saveAll(resources);
+    }
+
+    public List<Resource> bulkUpdateCondition(List<String> ids, Resource.Condition condition) {
+        List<Resource> resources = resourceRepository.findByIdIn(ids);
+        for (Resource resource : resources) {
+            resource.setCondition(condition);
+        }
+        return resourceRepository.saveAll(resources);
+    }
+
     public Resource findById(String id) {
         return resourceRepository.findById(id)
                 .orElseThrow(() -> new RuntimeException("Resource not found"));

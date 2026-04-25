@@ -61,4 +61,7 @@ public interface ResourceRepository extends MongoRepository<Resource, String> {
 
     // Paginated search (legacy)
     Page<Resource> findAll(String type, String category, String status, String search, Pageable pageable);
+
+    // ========== Bulk Operations ==========
+    List<Resource> findByIdIn(List<String> ids);
 }

@@ -197,4 +197,43 @@ public class ResourceController {
         options.put("categories", resourceService.getDistinctCategories());
         return options;
     }
+
+    // ========== Bulk Operations Endpoints ==========
+
+    @PostMapping("/bulk")
+    @PreAuthorize("hasRole('ADMIN')")
+    public List<Resource> bulkCreate(@RequestBody List<Resource> resources) {
+        return resourceService.bulkCreate(resources);
+    }
+
+    @PutMapping("/bulk")
+    @PreAuthorize("hasRole('ADMIN')")
+    public List<Resource> bulkUpdate(@RequestBody List<Resource> resources) {
+        return resourceService.bulkUpdate(resources);
+    }
+
+    @DeleteMapping("/bulk")
+    @PreAuthorize("hasRole('ADMIN')")
+    public ResponseEntity<?> bulkDelete(@RequestBody List<String> ids) {
+        resourceService.bulkDelete(ids);
+        return ResponseEntity.noContent().build();
+    }
+
+    @PutMapping("/bulk/status")
+    @PreAuthorize("hasRole('ADMIN')")
+    public List<Resource> bulkUpdateStatus(@RequestBody Map<String, Object> request) {
+        @SuppressWarnings("unchecked")
+        List<String> ids = (List<String>) request.get("ids");
+        Resource.Status status = Resource.Status.valueOf((String) request.get("status"));
+        return resourceService.bulkUpdateStatus(ids, status);
+    }
+
+    @PutMapping("/bulk/condition")
+    @PreAuthorize("hasRole('ADMIN')")
+    public List<Resource> bulkUpdateCondition(@RequestBody Map<String, Object> request) {
+        @SuppressWarnings("unchecked")
+        List<String> ids = (List<String>) request.get("ids");
+        Resource.Condition condition = Resource.Condition.valueOf((String) request.get("condition"));
+        return resourceService.bulkUpdateCondition(ids, condition);
+    }
 }
