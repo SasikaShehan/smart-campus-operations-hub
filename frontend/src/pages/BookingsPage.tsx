@@ -175,7 +175,7 @@ export default function BookingsPage() {
 
       <Dialog open={reviewOpen} onOpenChange={setReviewOpen}>
         <DialogContent>
-          <DialogHeader><DialogTitle>Review Booking</DialogTitle></DialogHeader>
+          <DialogHeader><DialogTitle>Review Booking.</DialogTitle></DialogHeader>
           {selectedBooking && (
             <div className="space-y-4">
               <div className="text-sm space-y-1">
