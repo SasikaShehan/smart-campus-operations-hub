@@ -79,6 +79,6 @@ public class NotificationController {
     private User getUserFromAuth(Authentication auth) {
         String email = auth.getName();
         return userRepository.findByEmail(email)
-                .orElseThrow(() -> new RuntimeException("User not found"));
+                .orElseThrow(() -> new RuntimeException("User Can't be found"));
     }
 }
