@@ -156,4 +156,45 @@ public class ResourceController {
         stats.put("maintenanceDue", resourceService.findMaintenanceDue().size());
         return stats;
     }
+
+    // ========== Search & Filter Endpoints ==========
+
+    @GetMapping("/search")
+    public Page<Resource> searchResources(
+            @RequestParam(required = false) String search,
+            @RequestParam(defaultValue = "0") int page,
+            @RequestParam(defaultValue = "10") int size,
+            @RequestParam(defaultValue = "name") String sortBy,
+            @RequestParam(defaultValue = "asc") String sortDir) {
+        Sort sort = sortDir.equalsIgnoreCase("desc") 
+            ? Sort.by(sortBy).descending() 
+            : Sort.by(sortBy).ascending();
+        Pageable pageable = PageRequest.of(page, size, sort);
+        return resourceService.searchAll(search, pageable);
+    }
+
+    @GetMapping("/advanced-search")
+    public Page<Resource> advancedSearch(
+            @RequestParam(required = false) String search,
+            @RequestParam(required = false) String type,
+            @RequestParam(required = false) String status,
+            @RequestParam(defaultValue = "0") int page,
+            @RequestParam(defaultValue = "10") int size,
+            @RequestParam(defaultValue = "name") String sortBy,
+            @RequestParam(defaultValue = "asc") String sortDir) {
+        Sort sort = sortDir.equalsIgnoreCase("desc") 
+            ? Sort.by(sortBy).descending() 
+            : Sort.by(sortBy).ascending();
+        Pageable pageable = PageRequest.of(page, size, sort);
+        return resourceService.advancedSearch(search, type, status, pageable);
+    }
+
+    @GetMapping("/filter-options")
+    public Map<String, List<String>> getFilterOptions() {
+        Map<String, List<String>> options = new HashMap<>();
+        options.put("buildings", resourceService.getDistinctBuildings());
+        options.put("floors", resourceService.getDistinctFloors());
+        options.put("categories", resourceService.getDistinctCategories());
+        return options;
+    }
 }
