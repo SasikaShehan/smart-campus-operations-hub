@@ -20,7 +20,7 @@ import java.util.Map;
 public class BookingService {
 
     private final BookingRepository bookingRepository;
-    private final FacilityService facilityService;  // ✅ Inject FacilityService
+    private final FacilityService facilityService;  //  Inject FacilityService
     private final NotificationService notificationService;
 
     // Get booking by ID
@@ -41,7 +41,7 @@ public class BookingService {
             throw new RuntimeException("Cannot book past dates");
         }
 
-        // ✅ Get facility by ID
+        //  Get facility by ID
         Facility facility = facilityService.getFacilityById(dto.getFacilityId());
         
         // Check if facility is active
@@ -57,7 +57,7 @@ public class BookingService {
         // Create booking
         Booking booking = Booking.builder()
                 .user(user)
-                .facility(facility)  // ✅ Use Facility object
+                .facility(facility)  //  Use Facility object
                 .startTime(dto.getStartTime())
                 .endTime(dto.getEndTime())
                 .purpose(dto.getPurpose())
@@ -195,7 +195,7 @@ public class BookingService {
             throw new RuntimeException("Cannot book past dates");
         }
         
-        // ✅ Get new facility
+        //  Get new facility
         Facility facility = facilityService.getFacilityById(dto.getFacilityId());
         
         // Check for conflicts (excluding this booking)
