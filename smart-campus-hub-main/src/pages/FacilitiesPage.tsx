@@ -166,7 +166,7 @@ const facilitySchema = z.object({
   name: z.string().min(3, "Name must be at least 3 characters"),
   type: z.string().min(1, "Please select a type"),
   location: z.string().min(3, "Location is required"),
-  description: z.string().min(10, "Description must be at least 10 characters"),
+  description: z.string().optional(),
   capacity: z.number().min(1, "Capacity must be at least 1"),
   availabilitySchedule: z.string().min(1, "Schedule is required"),
   status: z.string().min(1, "Status is required"),

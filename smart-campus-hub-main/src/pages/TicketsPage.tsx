@@ -439,7 +439,7 @@ const ticketSchema = z.object({
   title: z.string().min(5, "Title must be at least 5 characters").max(100),
   resourceId: z.string().min(1, "Please select a location"),
   category: z.string().min(1, "Please select a category"),
-  description: z.string().min(10, "Description must be at least 10 characters"),
+  description: z.string().optional(),
   priority: z.string().min(1, "Please select a priority"),
   contactEmail: z.string().email("Invalid email address"),
   contactPhone: z.string().min(10, "Phone number must be at least 10 digits"),

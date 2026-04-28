@@ -231,7 +231,7 @@ const bookingSchema = z.object({
   date: z.string().min(1, "Please select a date"),
   startTime: z.string().min(1, "Start time is required"),
   endTime: z.string().min(1, "End time is required"),
-  purpose: z.string().min(10, "Purpose must be at least 10 characters long"),
+  purpose: z.string().optional(),
   attendees: z.number().min(1, "Must have at least 1 attendee"),
 });
 
