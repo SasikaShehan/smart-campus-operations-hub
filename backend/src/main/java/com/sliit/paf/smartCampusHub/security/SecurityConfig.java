@@ -9,19 +9,15 @@ import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
-import com.sliit.paf.smartCampusHub.service.CustomOAuth2UserService;
-
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 
 @Configuration
 @EnableWebSecurity
-@EnableMethodSecurity 
+@EnableMethodSecurity
 @RequiredArgsConstructor
 public class SecurityConfig {
 
-    private final CustomOAuth2UserService oauthService;
-    private final OAuth2SuccessHandler successHandler;
     private final JwtAuthenticationFilter jwtAuthenticationFilter;
 
     @Bean
@@ -30,14 +26,12 @@ public class SecurityConfig {
             .csrf(csrf -> csrf.disable())
             .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
             .authorizeHttpRequests(auth -> auth
-                .requestMatchers("/", "/error", "/oauth2/**").permitAll()
+                // Public: Firebase login, manual login/register + error pages
+                .requestMatchers("/", "/error", "/login", "/api/auth/firebase", "/api/auth/login", "/api/auth/register").permitAll()
+                // Role management: ADMIN only (enforced via @PreAuthorize in controller)
+                // All other /api/** routes require authentication
                 .anyRequest().authenticated()
             )
-            .oauth2Login(oauth -> oauth
-                .userInfoEndpoint(user -> user.userService(oauthService))
-                .successHandler(successHandler)
-            )
-            .logout(logout -> logout.logoutSuccessUrl("/").permitAll())
             .exceptionHandling(exception -> exception.authenticationEntryPoint((request, response, authException) -> {
                 response.setContentType("application/json");
                 response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
@@ -54,7 +48,8 @@ public class SecurityConfig {
     @Bean
     public org.springframework.web.cors.CorsConfigurationSource corsConfigurationSource() {
         org.springframework.web.cors.CorsConfiguration configuration = new org.springframework.web.cors.CorsConfiguration();
-        configuration.setAllowedOrigins(java.util.List.of("http://localhost:8080"));
+        // Allow any localhost port (dev) — use allowedOriginPatterns so credentials still work
+        configuration.setAllowedOriginPatterns(java.util.List.of("http://localhost:[*]"));
         configuration.setAllowedMethods(java.util.List.of("GET", "POST", "PUT", "PATCH", "DELETE", "OPTIONS"));
         configuration.setAllowedHeaders(java.util.List.of("Authorization", "Content-Type", "Cache-Control"));
         configuration.setAllowCredentials(true);

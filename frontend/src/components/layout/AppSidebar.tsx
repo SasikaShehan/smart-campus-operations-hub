@@ -1,5 +1,6 @@
-import { Link, useLocation } from "react-router-dom";
-import { useAuth } from "@/contexts/AuthContext";
+import { Link, useLocation, useNavigate } from "react-router-dom";
+import { useEffect } from "react";
+import { useAuth, Role } from "@/contexts/AuthContext";
 import {
   LayoutDashboard,
   Building2,
@@ -10,28 +11,103 @@ import {
   GraduationCap,
   BarChart3,
   ScanLine,
+  Shield,
+  Users,
 } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { Badge } from "@/components/ui/badge";
 import { notifications } from "@/data/mockData";
 
+// Role-based access per nav item
+// If 'roles' is undefined → all authenticated users can access
 const navItems = [
-  { label: "Dashboard", path: "/", icon: LayoutDashboard },
-  { label: "Facilities", path: "/facilities", icon: Building2 },
-  { label: "Bookings", path: "/bookings", icon: CalendarCheck },
-  { label: "Tickets", path: "/tickets", icon: AlertTriangle },
-  { label: "Notifications", path: "/notifications", icon: Bell, badge: true },
-  { label: "Analytics", path: "/analytics", icon: BarChart3, adminOnly: true },
-  { label: "Check-In", path: "/check-in", icon: ScanLine },
+  {
+    label: "Dashboard",
+    path: "/",
+    icon: LayoutDashboard,
+    roles: undefined, // all roles
+  },
+  {
+    label: "Facilities",
+    path: "/facilities",
+    icon: Building2,
+    roles: ["ADMIN", "MANAGER", "STUDENT", "LECTURER"] as Role[],
+  },
+  {
+    label: "Bookings",
+    path: "/bookings",
+    icon: CalendarCheck,
+    roles: ["ADMIN", "MANAGER", "STUDENT", "LECTURER"] as Role[],
+  },
+  {
+    label: "Tickets",
+    path: "/tickets",
+    icon: AlertTriangle,
+    roles: undefined, // all roles
+  },
+  {
+    label: "Notifications",
+    path: "/notifications",
+    icon: Bell,
+    badge: true,
+    roles: undefined, // all roles
+  },
+  {
+    label: "Analytics",
+    path: "/analytics",
+    icon: BarChart3,
+    roles: ["ADMIN", "MANAGER"] as Role[],
+  },
+  {
+    label: "Check-In",
+    path: "/check-in",
+    icon: ScanLine,
+    roles: ["ADMIN", "MANAGER", "TECHNICIAN"] as Role[],
+  },
+  {
+    label: "Users",
+    path: "/users",
+    icon: Users,
+    roles: ["ADMIN"] as Role[],
+  },
 ];
+
+// Role badge colors
+const roleBadgeStyle: Record<Role, string> = {
+  ADMIN:      "bg-red-500/20 text-red-400 border-red-500/30",
+  MANAGER:    "bg-purple-500/20 text-purple-400 border-purple-500/30",
+  LECTURER:   "bg-blue-500/20 text-blue-400 border-blue-500/30",
+  STUDENT:    "bg-green-500/20 text-green-400 border-green-500/30",
+  TECHNICIAN: "bg-orange-500/20 text-orange-400 border-orange-500/30",
+};
 
 export default function AppSidebar() {
   const { pathname } = useLocation();
+  const navigate = useNavigate();
   const { user, logout } = useAuth();
+
+  const userRole = user?.role as Role | undefined;
+
+  // Filter nav items based on user's role
+  const visibleNavItems = navItems.filter((item) => {
+    if (!item.roles) return true; // visible to all
+    return userRole ? item.roles.includes(userRole) : false;
+  });
 
   const unreadCount = notifications.filter(
     (n) => n.userId === user?.id && !n.read
   ).length;
+
+  // Redirect to an allowed page if current route is not accessible
+  useEffect(() => {
+    if (!userRole) return;
+    const currentItem = navItems.find((item) =>
+      item.path === "/" ? pathname === "/" : pathname.startsWith(item.path)
+    );
+    if (currentItem && currentItem.roles && !currentItem.roles.includes(userRole)) {
+      navigate("/", { replace: true });
+    }
+  }, [pathname, userRole, navigate]);
 
   return (
     <aside className="fixed left-0 top-0 h-screen w-64 bg-sidebar flex flex-col z-30 border-r border-sidebar-border">
@@ -48,7 +124,7 @@ export default function AppSidebar() {
       </div>
 
       <nav className="flex-1 px-3 mt-2 space-y-1">
-        {navItems.filter((item) => !item.adminOnly || user?.role === "ADMIN").map((item) => {
+        {visibleNavItems.map((item) => {
           const isActive =
             item.path === "/"
               ? pathname === "/"
@@ -76,6 +152,7 @@ export default function AppSidebar() {
         })}
       </nav>
 
+      {/* User info + role badge */}
       <div className="p-3 border-t border-sidebar-border">
         <div className="flex items-center gap-3 px-3 py-2">
           <div className="w-8 h-8 rounded-full bg-sidebar-accent flex items-center justify-center text-xs font-semibold text-sidebar-accent-foreground">
@@ -85,11 +162,22 @@ export default function AppSidebar() {
             <p className="text-sm font-medium text-sidebar-foreground truncate">
               {user?.name}
             </p>
-            <p className="text-[11px] text-sidebar-muted">{user?.role}</p>
+            {userRole && (
+              <span
+                className={cn(
+                  "inline-flex items-center gap-1 text-[10px] font-semibold px-1.5 py-0.5 rounded border mt-0.5",
+                  roleBadgeStyle[userRole]
+                )}
+              >
+                {userRole === "ADMIN" && <Shield className="w-2.5 h-2.5" />}
+                {userRole}
+              </span>
+            )}
           </div>
           <button
             onClick={logout}
             className="text-sidebar-muted hover:text-sidebar-foreground transition-colors"
+            title="Sign out"
           >
             <LogOut className="w-4 h-4" />
           </button>

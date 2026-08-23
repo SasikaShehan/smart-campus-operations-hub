@@ -1,5 +1,6 @@
 package com.sliit.paf.smartCampusHub.model;
 
+import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
@@ -17,7 +18,6 @@ import lombok.Setter;
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-
 public class User {
 
     @Id
@@ -26,8 +26,11 @@ public class User {
 
     private String name;
     private String email;
-    private String role;        // USER / ADMIN
-    private String provider;    // GOOGLE
-    private String providerId;  // Google unique ID
+    private String role;           // STUDENT / LECTURER / TECHNICIAN / MANAGER / ADMIN
+    private String provider;       // GOOGLE | LOCAL
+    private String providerId;     // Google unique ID (null for LOCAL)
+
+    @Column(name = "password_hash")
+    private String passwordHash;   // BCrypt hash — null for Google-only users
 
 }

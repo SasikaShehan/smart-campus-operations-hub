@@ -43,3 +43,6 @@ mvnw.cmd
 # Environment variables
 .env
 .env.local
+
+# Firebase credentials - NEVER commit this file!
+src/main/resources/firebase-service-account.json
